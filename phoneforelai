@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For My Baby</title>
+    <style>
+        :root {
+            --ios-blue: #007aff;
+            --ios-red: #ff3b30;
+            --ios-green: #34c759;
+            --ios-dark-bg: #000000;
+            --ios-grey: #1c1c1e;
+            --ios-text-grey: #8e8e93;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(180deg, #ffafbd 0%, #ffc3a0 100%);
+            overflow: hidden;
+            touch-action: manipulation;
+        }
+
+        /* --- SCREENS --- */
+        .screen { display: none; flex-direction: column; align-items: center; width: 100%; max-width: 400px; padding: 20px; animation: fadeIn 0.4s ease; }
+        .active { display: flex; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* --- NOTIFICATION --- */
+        #notification {
+            position: fixed; top: -120px; left: 50%; transform: translateX(-50%);
+            width: 90%; max-width: 350px; background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(15px); padding: 15px; border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2); z-index: 1000;
+            display: flex; align-items: center; gap: 12px; cursor: pointer;
+            transition: top 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            color: black;
+        }
+        #notification.show { top: 20px; }
+
+        /* --- PASSCODE PAGE --- */
+        .passcode-header { text-align: center; margin-bottom: 40px; color: #333; }
+        .dots-container { display: flex; gap: 15px; margin-bottom: 50px; }
+        .dot { width: 12px; height: 12px; border: 1.5px solid #333; border-radius: 50%; transition: background 0.2s; }
+        .dot.filled { background: #333; }
+        .keypad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px 25px; justify-items: center; }
+        .key { width: 75px; height: 75px; border-radius: 50%; background: rgba(255, 255, 255, 0.4); display: flex; justify-content: center; align-items: center; cursor: pointer; border: none; font-size: 30px; color: #333; }
+        .delete-btn { font-size: 14px; color: #333; font-weight: 600; cursor: pointer; }
+
+        /* --- HOME SCREEN --- */
+        .app-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; width: 100%; padding: 40px 10px; }
+        .app { display: flex; flex-direction: column; align-items: center; cursor: pointer; }
+        .app-icon { width: 60px; height: 60px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 30px; background: white; margin-bottom: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .app-name { font-size: 11px; color: #333; font-weight: 500; text-align: center; }
+        .lock-btn { margin-top: 50px; background: rgba(0,0,0,0.2); padding: 10px 20px; border-radius: 20px; color: white; border: none; cursor: pointer; font-weight: 500; }
+
+        /* --- APP WINDOWS --- */
+        .app-window { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 500; display: none; flex-direction: column; }
+        .app-header { display: flex; justify-content: space-between; align-items: center; padding: 50px 20px 10px; border-bottom: 1px solid #eee; }
+        .back-btn { color: var(--ios-blue); cursor: pointer; border: none; background: none; font-size: 17px; }
+
+        /* --- MUSIC PLAYER --- */
+        .music-player-view { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 30px; text-align: center; }
+        .album-art { width: 250px; height: 250px; background: #2c2c2e; border-radius: 20px; display: flex; align-items: center; justify-content: center; font-size: 100px; box-shadow: 0 20px 40px rgba(0,0,0,0.3); margin-bottom: 30px; overflow: hidden;}
+        .album-art img { width: 100%; height: 100%; object-fit: cover; }
+        .play-btn { background: none; border: none; font-size: 60px; cursor: pointer; color: #333; }
+
+        /* --- GALLERY --- */
+        .photo-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; padding: 10px; overflow-y: auto; }
+        .photo-grid img { width: 100%; aspect-ratio: 1/1; object-fit: cover; border-radius: 4px; cursor: pointer; }
+        
+        #photo-modal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.95); z-index: 1000; display: none;
+            justify-content: center; align-items: center;
+        }
+        #modal-img { max-width: 95%; max-height: 80%; border-radius: 8px; }
+        .close-modal { position: absolute; top: 40px; right: 20px; color: white; font-size: 30px; cursor: pointer; font-weight: bold; }
+
+        /* --- FLAPPY JAY --- */
+        #game-ui { position: absolute; top: 110px; width: 100%; text-align: center; color: white; font-weight: bold; font-size: 24px; pointer-events: none; z-index: 25; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); }
+        #game-canvas { background: #70c5ce; width: 100%; height: 100%; display: block; cursor: pointer; }
+
+        /* --- MESSAGES (DARK) --- */
+        #app-messages { background: var(--ios-dark-bg); color: white; }
+        .chat-row { display: flex; align-items: center; padding: 15px 20px; border-bottom: 0.5px solid #333; cursor: pointer; position: relative; }
+        .unread-dot { width: 10px; height: 10px; background: var(--ios-blue); border-radius: 50%; position: absolute; left: 5px; }
+
+        /* --- LETTER PAGE --- */
+        #letter-view { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #fff; color: #000; z-index: 600; display: none; flex-direction: column; }
+        .letter-body { padding: 25px; overflow-y: auto; line-height: 1.6; white-space: pre-wrap; font-size: 16px; }
+    </style>
+</head>
+<body>
+
+    <div id="photo-modal" onclick="closePhoto()">
+        <span class="close-modal">&times;</span>
+        <img id="modal-img" src="">
+    </div>
+
+    <div id="notification" onclick="handleNotificationClick()">
+        <div style="background:var(--ios-green); width:40px; height:40px; border-radius:10px; display:flex; align-items:center; justify-content:center; color:white; font-size:20px;">💬</div>
+        <div>
+            <div style="font-weight:bold; font-size:14px;">Messages</div>
+            <div style="font-size:13px;">new message from baby 💕</div>
+        </div>
+    </div>
+
+    <div id="screen-passcode" class="screen active">
+        <div class="passcode-header"><h2>PLEASE ENTER JAY'S BIRTHDATE</h2></div>
+        <div class="dots-container" id="dots-box">
+            <div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div>
+        </div>
+        <div class="keypad">
+            <button class="key" onclick="press('1')">1</button><button class="key" onclick="press('2')">2</button><button class="key" onclick="press('3')">3</button>
+            <button class="key" onclick="press('4')">4</button><button class="key" onclick="press('5')">5</button><button class="key" onclick="press('6')">6</button>
+            <button class="key" onclick="press('7')">7</button><button class="key" onclick="press('8')">8</button><button class="key" onclick="press('9')">9</button>
+            <div style="width:75px"></div><button class="key" onclick="press('0')">0</button>
+            <div class="delete-btn" onclick="clearDots()">Delete</div>
+        </div>
+    </div>
+
+    <div id="screen-wrong" class="screen">
+        <h1 style="color:var(--ios-red); margin-top:50px;">WRONG PASSWORD!</h1>
+        <p style="color:#333; text-align:center;">Are you sure you are my baby? 🥺</p>
+        <p style="color:#555; font-size:14px;">(MM/DD/YEAR)</p>
+        <button class="lock-btn" onclick="showPasscode()" style="background:white; color:black; border: 1px solid #ccc;">Try Again</button>
+    </div>
+
+    <div id="screen-home" class="screen">
+        <div class="app-grid">
+            <div class="app" onclick="openApp('app-messages')">
+                <div class="app-icon" style="background:var(--ios-green); color:white;">💬</div>
+                <div class="app-name">Messages</div>
+            </div>
+            <div class="app" onclick="openApp('app-game')">
+                <div class="app-icon" style="background:#f1c40f;">🐦</div>
+                <div class="app-name">Flappy Jay</div>
+            </div>
+            <div class="app" onclick="openApp('app-gallery')">
+                <div class="app-icon" style="background: white;">🖼️</div>
+                <div class="app-name">Gallery</div>
+            </div>
+            <div class="app" onclick="openApp('app-music')">
+                <div class="app-icon" style="background:#333; color:white;">🎵</div>
+                <div class="app-name">Music</div>
+            </div>
+        </div>
+        <button class="lock-btn" onclick="lockPhone()">🔒 Lock Screen</button>
+    </div>
+
+    <div id="app-music" class="app-window">
+        <div class="app-header">
+            <button class="back-btn" onclick="closeApp('app-music')">Home</button>
+            <div style="font-weight:600;">Music</div>
+            <div style="width:50px"></div>
+        </div>
+        <div class="music-player-view">
+            <div class="album-art">
+                <img src="https://raw.githubusercontent.com/jayforelaiza/picsandmp3/refs/heads/main/IMG_7320.jpeg" alt="Album Art">
+            </div>
+            <h1 style="margin:0;">LOVE YA!</h1>
+            <p style="color:var(--ios-text-grey); font-size: 18px; margin-top: 5px;">HYUKOH</p>
+            <audio id="main-audio">
+                <source src="https://github.com/jayforelaiza/picsandmp3/raw/refs/heads/main/%5BOfficial%20Audio%5D%20HYUKOH(%E1%84%92%E1%85%A7%E1%86%A8%E1%84%8B%E1%85%A9)%20-%20LOVE%20YA!.mp3" type="audio/mpeg">
+            </audio>
+            <button class="play-btn" id="audio-control" onclick="toggleAudio()">▶️</button>
+        </div>
+    </div>
+
+    <div id="app-gallery" class="app-window">
+        <div class="app-header">
+            <button class="back-btn" onclick="closeApp('app-gallery')">Home</button>
+            <div style="font-weight:600;">Gallery</div>
+            <div style="width:50px"></div>
+        </div>
+        <div class="photo-grid">
+            <img src="https://raw.githubusercontent.com/jayforelaiza/picsandmp3/refs/heads/main/2E03A055-5027-4828-B652-B77C41BA62A8.jpeg" onclick="openPhoto(this.src)">
+            <img src="https://raw.githubusercontent.com/jayforelaiza/picsandmp3/refs/heads/main/DCD2CD24-CAF7-455F-8E68-A5B5A2123CCB.jpeg" onclick="openPhoto(this.src)">
+            <img src="https://raw.githubusercontent.com/jayforelaiza/picsandmp3/refs/heads/main/IMG_7288.jpeg" onclick="openPhoto(this.src)">
+            <img src="https://raw.githubusercontent.com/jayforelaiza/picsandmp3/refs/heads/main/IMG_7320.jpeg" onclick="openPhoto(this.src)">
+            <img src="https://raw.githubusercontent.com/jayforelaiza/picsandmp3/refs/heads/main/att.UHHhzAEx6vMBCj1R1XTxnAqNRPaDVDphZyjZt9aD4x8.jpeg" onclick="openPhoto(this.src)">
+            <img src="https://raw.githubusercontent.com/jayforelaiza/picsandmp3/refs/heads/main/att.UNxjGqujvMKKWrSe1zyVhZRd8hoVGcOKt6r12KmLgIQ.jpeg" onclick="openPhoto(this.src)">
+            <img src="https://github.com/jayforelaiza/picsandmp3/raw/refs/heads/main/att.wXeEhIrX4hfVwXlB70oDDJ68DqEdxD2l7wtt9OdgRWU.jpeg" onclick="openPhoto(this.src)">
+            <img src="https://github.com/jayforelaiza/picsandmp3/raw/refs/heads/main/temp_image_F3D52F21-7474-4D21-B3BB-3360E3FAAC8D.jpeg" onclick="openPhoto(this.src)">
+        </div>
+    </div>
+
+    <div id="app-game" class="app-window">
+        <div class="app-header" style="z-index:30; background:white;">
+            <button class="back-btn" onclick="closeApp('app-game')">Home</button>
+            <div style="font-weight:600;">Flappy Jay</div>
+            <div style="width:50px"></div>
+        </div>
+        <div id="game-ui">
+            Score: <span id="current-score">0</span><br>
+            High Score: <span id="high-score">0</span>
+        </div>
+        <canvas id="game-canvas"></canvas>
+    </div>
+
+    <div id="app-messages" class="app-window">
+        <div class="app-header">
+            <button class="back-btn" onclick="closeApp('app-messages')">Home</button>
+            <div style="font-weight:600; color:white;">Messages</div>
+            <div style="width:50px"></div>
+        </div>
+        <div class="chat-row" onclick="viewLetter()">
+            <div class="unread-dot" id="dot-unread"></div>
+            <div style="width:50px; height:50px; border-radius:50%; background:#555; margin-right:15px; display:flex; align-items:center; justify-content:center; font-size:20px;">👤</div>
+            <div style="flex:1;">
+                <div style="display:flex; justify-content:space-between;"><span style="font-weight:600;">Baby 💕</span><span style="color:#8e8e93; font-size:12px;">Just Now</span></div>
+                <div style="color:#8e8e93; font-size:14px;">I am really sorry for everything...</div>
+            </div>
+        </div>
+    </div>
+
+    <div id="letter-view">
+        <div class="app-header">
+            <button class="back-btn" onclick="closeLetter()">Back</button>
+            <div style="font-weight:bold;">Baby 💕</div>
+            <div style="width:50px"></div>
+        </div>
+        <div class="letter-body">
+            <h2 style="text-align: center;">SORRY BAB ☹️!</h2>
+I am really sorry for everything I did and said that hurt you. I know you asked me not to fight with you yesterday and I still ended up hurting you. I hate that I keep being the reason for your pain when all you ever give me is love and patience. You always forgive me even when I know you are still hurting inside. That says so much about how kind and loving you are. You do not deserve the stress and sadness that I bring into your heart. I feel terrible knowing that you were already not feeling well and I still made things harder for you. You trusted my promise that I would not hurt you and I broke that promise. I am so sorry for being all talk and not showing it through my actions. 
+
+You are perfect to me in so many ways. You are sweet, beautiful, caring, and loving. You always try to understand me even when I make it difficult, and I hate myself for taking that for granted. It hurts me knowing that I keep repeating the same mistakes. You deserve peace, comfort, and reassurance from me, not fights and hurtful words. I am sorry for failing to be the boyfriend you deserve. 
+
+I never want you to feel like your love is being wasted on me. You give me so much patience and forgiveness, and I should be protecting your heart instead of being the one who breaks it. I want to be better for you, not just say it. I want to learn how to control my emotions and think before I speak. You deserve consistency and gentleness from me every day. Please believe that my love for you is real even if my actions sometimes make it hard to see. I never want to lose you and I never want to make you feel alone or unappreciated again. I understand if you feel tired or disappointed in me. You have every right to feel that way. All I can do is promise that I will keep working on myself and try harder to change. I am truly sorry bab. I failed you and I hate that I did. Thank you for loving me even when I make it hard. I will do my best to become someone who makes you feel safe, loved, and happy every day 🥹
+        </div>
+    </div>
+
+    <script>
+        let code = "";
+        const correctCode = "07262005";
+        let highScore = localStorage.getItem("flappyHighScore") || 0;
+
+        function press(num) {
+            if (code.length < 8) {
+                code += num; updateDots();
+                if (code.length === 8) { setTimeout(validate, 300); }
+            }
+        }
+
+        function updateDots() {
+            const dots = document.querySelectorAll('.dot');
+            dots.forEach((dot, i) => dot.classList.toggle('filled', i < code.length));
+        }
+
+        function validate() {
+            if (code === correctCode) {
+                document.getElementById('screen-passcode').classList.remove('active');
+                document.getElementById('screen-home').classList.add('active');
+                setTimeout(() => { document.getElementById('notification').classList.add('show'); }, 1000);
+            } else {
+                document.getElementById('screen-passcode').classList.remove('active');
+                document.getElementById('screen-wrong').classList.add('active');
+            }
+        }
+
+        function showPasscode() { code = ""; updateDots(); document.getElementById('screen-wrong').classList.remove('active'); document.getElementById('screen-passcode').classList.add('active'); }
+        function clearDots() { code = ""; updateDots(); }
+        function lockPhone() { location.reload(); }
+        function handleNotificationClick() { document.getElementById('notification').classList.remove('show'); openApp('app-messages'); }
+        
+        function openApp(id) { 
+            document.getElementById(id).style.display = 'flex'; 
+            if(id === 'app-game') startGame(); 
+        }
+
+        function closeApp(id) { document.getElementById(id).style.display = 'none'; }
+        function viewLetter() { document.getElementById('letter-view').style.display = 'flex'; document.getElementById('dot-unread').style.display = 'none'; }
+        function closeLetter() { document.getElementById('letter-view').style.display = 'none'; }
+
+        function openPhoto(src) {
+            document.getElementById('modal-img').src = src;
+            document.getElementById('photo-modal').style.display = 'flex';
+        }
+        function closePhoto() {
+            document.getElementById('photo-modal').style.display = 'none';
+        }
+
+        function toggleAudio() {
+            const audio = document.getElementById('main-audio');
+            const btn = document.getElementById('audio-control');
+            if (audio.paused) { audio.play(); btn.innerText = "⏸️"; } 
+            else { audio.pause(); btn.innerText = "▶️"; }
+        }
+
+        // --- IMPROVED FLAPPY GAME ---
+        function startGame() {
+            const canvas = document.getElementById("game-canvas");
+            const ctx = canvas.getContext("2d");
+            canvas.width = 400;
+            canvas.height = window.innerHeight;
+
+            let birdY = canvas.height/2, birdX = 50, velocity = 0, gravity = 0.3;
+            let pipes = [], frame = 0, score = 0, gameOver = false;
+            
+            highScore = localStorage.getItem("flappyHighScore") || 0;
+            document.getElementById('high-score').innerText = highScore;
+
+            function draw() {
+                // Clear Canvas
+                ctx.fillStyle = "#70c5ce"; 
+                ctx.fillRect(0,0,canvas.width, canvas.height);
+
+                // Pipes Logic
+                if(frame % 90 === 0) {
+                    let gap = 160;
+                    let topH = Math.random() * (canvas.height/2 - 100) + 50;
+                    pipes.push({x: canvas.width, top: topH, bottom: topH + gap, counted: false});
+                }
+                
+                pipes.forEach((p, i) => {
+                    p.x -= 3.5;
+                    ctx.fillStyle = "#2ecc71";
+                    ctx.fillRect(p.x, 0, 55, p.top);
+                    ctx.fillRect(p.x, p.bottom, 55, canvas.height);
+                    
+                    if(p.x + 55 < 0) { pipes.splice(i, 1); }
+                    
+                    // Score counting logic - when bird's front (birdX + 40) passes pipe's back (p.x + 55)
+                    if(birdX > p.x + 55 && !p.counted) {
+                        score++;
+                        p.counted = true;
+                        document.getElementById('current-score').innerText = score;
+                        if(score > highScore) {
+                            highScore = score;
+                            localStorage.setItem("flappyHighScore", highScore);
+                            document.getElementById('high-score').innerText = highScore;
+                        }
+                    }
+                    
+                    // Collision check
+                    if(birdX + 30 > p.x && birdX < p.x + 55 && (birdY - 25 < p.top || birdY > p.bottom)) gameOver = true;
+                });
+
+                // Bird Physics
+                velocity += gravity; birdY += velocity;
+                ctx.save();
+                ctx.translate(birdX + 20, birdY - 20);
+                ctx.scale(-1, 1); // Bird facing forward (left)
+                ctx.font = "40px Arial";
+                ctx.fillText("🐦", 0, 0);
+                ctx.restore();
+
+                if(birdY > canvas.height || birdY < 0) gameOver = true;
+
+                if(gameOver) {
+                    // Darken screen on death
+                    ctx.fillStyle = "rgba(0,0,0,0.4)";
+                    ctx.fillRect(0,0,canvas.width, canvas.height);
+                    
+                    ctx.fillStyle = "white"; 
+                    ctx.textAlign = "center";
+                    ctx.font = "bold 40px Arial";
+                    ctx.fillText("GAME OVER", canvas.width/2, canvas.height/2 - 20);
+                    ctx.font = "20px Arial";
+                    ctx.fillText("TAP TO TRY AGAIN", canvas.width/2, canvas.height/2 + 30);
+                    return;
+                }
+
+                frame++;
+                requestAnimationFrame(draw);
+            }
+            
+            canvas.onclick = (e) => { 
+                e.preventDefault();
+                if(gameOver) { 
+                    // Reset game
+                    gameOver=false; birdY=canvas.height/2; pipes=[]; score=0; velocity=0; frame=0; 
+                    document.getElementById('current-score').innerText = 0; 
+                    draw(); 
+                } else {
+                    velocity = -6.5; 
+                }
+            };
+            draw();
+        }
+    </script>
+</body>
+</html>
