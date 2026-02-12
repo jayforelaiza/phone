@@ -13,6 +13,7 @@
             --ios-grey: #1c1c1e;
             --ios-text-grey: #8e8e93;
             --ios-journal: #f39c12;
+            --monthsary-pink: #ff758c;
         }
 
         body {
@@ -77,9 +78,6 @@
         .ttt-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; width: 300px; margin: 20px auto; }
         .ttt-cell { width: 90px; height: 90px; background: #f0f0f0; display: flex; align-items: center; justify-content: center; font-size: 40px; font-weight: bold; border-radius: 10px; color: #333;}
 
-        /* --- LETTER --- */
-        .letter-body { padding: 25px; overflow-y: auto; line-height: 1.6; white-space: pre-wrap; font-size: 16px; color: #000; }
-
         /* --- JOURNAL APP --- */
         .journal-container { padding: 20px; display: flex; flex-direction: column; height: 100%; box-sizing: border-box; background: #f9f9f9; }
         .journal-input { width: 100%; height: 120px; padding: 15px; border: 1px solid #ddd; border-radius: 12px; font-family: inherit; font-size: 16px; margin-bottom: 10px; resize: none; box-sizing: border-box; }
@@ -89,6 +87,20 @@
         .entry-date { font-size: 12px; color: #888; margin-bottom: 5px; font-weight: 600; }
         .entry-text { font-size: 15px; line-height: 1.4; color: #333; white-space: pre-wrap; }
         .delete-entry { position: absolute; top: 10px; right: 10px; color: #ff3b30; font-size: 12px; cursor: pointer; font-weight: bold; border: 1px solid #ff3b30; padding: 2px 6px; border-radius: 4px; }
+
+        /* --- ROMANTIC DESIGN FOR MONTHSARY APP --- */
+        .romantic-container { padding: 25px; background: linear-gradient(180deg, #fff5f7 0%, #ffe4e9 100%); min-height: 100%; position: relative; overflow-y: auto; }
+        .floating-heart { position: absolute; color: #ffb6c1; font-size: 20px; animation: floatUp 4s infinite linear; opacity: 0; z-index: 0; }
+        @keyframes floatUp { 0% { transform: translateY(100vh) rotate(0deg); opacity: 1; } 100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; } }
+        .letter-card { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(5px); border-radius: 25px; padding: 25px; box-shadow: 0 10px 30px rgba(255, 182, 193, 0.3); border: 1px solid #ffffff; position: relative; z-index: 1; margin-bottom: 50px; }
+        .letter-header-rom { text-align: center; margin-bottom: 20px; }
+        .letter-header-rom h2 { font-family: serif; color: #d63384; font-size: 24px; margin-bottom: 5px; }
+        .letter-content-rom { line-height: 1.8; color: #4a4a4a; white-space: pre-wrap; font-size: 15px; text-align: justify; }
+        .love-footer { text-align: center; padding: 20px; font-style: italic; color: #d63384; font-weight: 600; }
+        .love-meter { width: 80%; height: 10px; background: #eee; border-radius: 10px; margin: 10px auto; overflow: hidden; }
+        .love-fill { width: 100%; height: 100%; background: linear-gradient(90deg, #ff758c, #ff7eb3); animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { opacity: 0.8; } 50% { opacity: 1; } 100% { opacity: 0.8; } }
+        .letter-body { padding: 25px; overflow-y: auto; line-height: 1.6; white-space: pre-wrap; font-size: 16px; color: #000; }
     </style>
 </head>
 <body>
@@ -132,6 +144,7 @@
             <div class="app" onclick="openApp('app-gallery')"><div class="app-icon" style="background:white;">🖼️</div><div class="app-name">Gallery</div></div>
             <div class="app" onclick="openApp('app-music')"><div class="app-icon" style="background:#333; color:white;">🎵</div><div class="app-name">Music</div></div>
             <div class="app" onclick="openApp('app-journal')"><div class="app-icon" style="background:var(--ios-journal); color:white;">📔</div><div class="app-name">Journal</div></div>
+            <div class="app" onclick="openApp('app-monthsary')"><div class="app-icon" style="background:var(--monthsary-pink); color:white;">💖</div><div class="app-name">4th Monthsary</div></div>
         </div>
         <button onclick="location.reload()" style="margin-top:50px; background:rgba(0,0,0,0.1); padding:10px 20px; border-radius:20px; color:#333; border:none; font-weight:600;">🔒 Lock Phone</button>
     </div>
@@ -157,10 +170,57 @@
             <div style="color:gray; font-size:14px;">I am really sorry for everything...</div>
         </div>
     </div>
+
+    <div id="app-monthsary" class="app-window">
+        <div class="app-header" style="background: transparent; border: none;">
+            <button class="back-btn" onclick="closeApp('app-monthsary')">✕ Close</button>
+            <div style="font-weight:600; color: #d63384;">Our Story</div>
+            <div style="width:50px"></div>
+        </div>
+        <div class="romantic-container">
+            <div class="floating-heart" style="left:10%; animation-delay:0s;">❤️</div>
+            <div class="floating-heart" style="left:30%; animation-delay:1s;">💖</div>
+            <div class="floating-heart" style="left:70%; animation-delay:2s;">💕</div>
+            <div class="floating-heart" style="left:90%; animation-delay:1.5s;">🌸</div>
+            <div class="floating-heart" style="left:50%; animation-delay:3s;">✨</div>
+            <div class="letter-card">
+                <div class="letter-header-rom">
+                    <h2>Happy 4th Monthsary!</h2>
+                    <div style="color: #ff758c;">To my baby Elaii 🦢</div>
+                </div>
+                <div class="letter-content-rom">
+Happy 4th monthsary babbb. I can’t believe we’re already here celebrating another month together, and it makes my heart feel so full. Time with you feels both fast and slow at the same time because every moment matters. You make ordinary days feel special and meaningful. Today I just want to remind you how grateful I am for you my baby elaii.
+
+These past months haven’t been perfect, and I know I caused a lot of pain along the way. I hate remembering the times I hurt you with my words and actions. I know I can be stubborn, emotional, and sometimes careless. It hurts me knowing that the person I love the most is the one I hurt the most. I’m really sorry jud for all those moments.
+
+You have always been patient with me even when I didn’t deserve it. You forgave me when I messed up again and again. You stayed even when it would have been easier to walk away. That kind of love is rare and beautiful. You are truly the most gwapa and soafer buotan nga person in my life.
+
+I remember the times I accused you of things that were not true. I know those words hurt deeply and I regret them so much. I wish I could take them back and replace them with trust and reassurance. You deserved understanding, not doubt. I promise to work on trusting you more every day.
+
+You told me before that you didn’t want to fight, especially during times when you were already hurting. I still failed and broke my promise, and that hurts me deeply. I hate that I added stress when you needed comfort. You deserved hugs, patience, and gentle love. I’m sorry for not being the peace you needed in those moments.
+
+Even with all my flaws, you still choose me. You still love me in ways I don’t always understand. You still see good in me even when I feel like I don’t deserve it. That kind of love makes me want to become better. You inspire me to grow and change.
+
+Thank you for being sweet, caring, and endlessly supportive. Thank you for the laughs, the talks, and the quiet moments together. Thank you for loving me even when I’m hard to love. Thank you for making me feel safe and understood. Salamat kaayo bab for staying beside me through everything.
+
+I promise to keep improving myself for us. I promise to think before I speak and to choose kindness always. I promise to listen more and understand you better. I promise to protect your heart the way you protect mine. I want to become the partner you truly deserve.
+
+Our relationship means everything to me. Every memory we create is something I treasure deeply. Every hug, every smile, every little moment matters so much. I want many more months and years with you. I want a future where we grow stronger together.
+
+Happy 4th monthsary babbb. I love you more than my words can fully explain. Thank you for loving me despite my mistakes and struggles. You are my happiness, my comfort, and my always. I love you forever, my babyyy.
+                </div>
+                <div class="love-footer">
+                    Love Meter: 10000%
+                    <div class="love-meter"><div class="love-fill"></div></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div id="letter-view" class="app-window" style="z-index:600;">
         <div class="app-header"><button class="back-btn" onclick="document.getElementById('letter-view').style.display='none'">Back</button></div>
         <div class="letter-body">
-<h2 style="text-align: center;">SORRY BAB ☹️!</h2>
+            <h2 style="text-align: center;">SORRY BAB ☹️!</h2>
 I am really sorry for everything I did and said that hurt you. I know you asked me not to fight with you yesterday and I still ended up hurting you. I hate that I keep being the reason for your pain when all you ever give me is love and patience. You always forgive me even when I know you are still hurting inside. That says so much about how kind and loving you are. You do not deserve the stress and sadness that I bring into your heart. I feel terrible knowing that you were already not feeling well and I still made things harder for you. You trusted my promise that I would not hurt you and I broke that promise. I am so sorry for being all talk and not showing it through my actions. 
 
 You are perfect to me in so many ways. You are sweet, beautiful, caring, and loving. You always try to understand me even when I make it difficult, and I hate myself for taking that for granted. It hurts me knowing that I keep repeating the same mistakes. You deserve peace, comfort, and reassurance from me, not fights and hurtful words. I am sorry for failing to be the boyfriend you deserve. 
@@ -247,12 +307,10 @@ I never want you to feel like your love is being wasted on me. You give me so mu
         function closePhoto() { document.getElementById('photo-modal').style.display='none'; }
         function toggleAudio() { const a = document.getElementById('main-audio'); const b = document.getElementById('audio-control'); if(a.paused){a.play(); b.innerText="⏸️";}else{a.pause(); b.innerText="▶️";} }
 
-        // --- SNAKE GAME ---
         let snake, apple, snakeDir, snakeInt, snakeScore, snakeOver = false;
         const sCanvas = document.getElementById("snake-canvas");
         const sCtx = sCanvas.getContext("2d");
         const box = 20;
-
         function startSnake() {
             snake = [{x: 8 * box, y: 8 * box}, {x: 7 * box, y: 8 * box}];
             apple = { x: Math.floor(Math.random() * 14 + 1) * box, y: Math.floor(Math.random() * 14 + 1) * box };
@@ -268,23 +326,13 @@ I never want you to feel like your love is being wasted on me. You give me so mu
             if(d === "left" && snakeDir !== "right") snakeDir = "left";
             if(d === "right" && snakeDir !== "left") snakeDir = "right";
         }
-        sCanvas.onclick = () => { if(snakeOver) startSnake(); };
-
         function drawSnake() {
             sCtx.fillStyle = "black"; sCtx.fillRect(0, 0, 300, 300);
-            if(snakeOver) {
-                sCtx.fillStyle = "white"; sCtx.font = "30px Arial"; sCtx.fillText("GAME OVER", 65, 140);
-                sCtx.font = "16px Arial"; sCtx.fillText("Tap to Restart", 100, 180);
-                return;
-            }
-            for(let i=0; i<snake.length; i++) {
-                sCtx.fillStyle = (i === 0) ? "#2ecc71" : "#27ae60";
-                sCtx.fillRect(snake[i].x, snake[i].y, box-2, box-2);
-            }
+            if(snakeOver) { sCtx.fillStyle = "white"; sCtx.font = "30px Arial"; sCtx.fillText("GAME OVER", 65, 140); return; }
+            for(let i=0; i<snake.length; i++) { sCtx.fillStyle = (i === 0) ? "#2ecc71" : "#27ae60"; sCtx.fillRect(snake[i].x, snake[i].y, box-2, box-2); }
             sCtx.fillStyle = "red"; sCtx.fillRect(apple.x, apple.y, box-2, box-2);
             let headX = snake[0].x; let headY = snake[0].y;
-            if(snakeDir === "up") headY -= box; if(snakeDir === "down") headY += box;
-            if(snakeDir === "left") headX -= box; if(snakeDir === "right") headX += box;
+            if(snakeDir === "up") headY -= box; if(snakeDir === "down") headY += box; if(snakeDir === "left") headX -= box; if(snakeDir === "right") headX += box;
             if(headX === apple.x && headY === apple.y) {
                 snakeScore++; document.getElementById("snake-score").innerText = "Score: " + snakeScore;
                 apple = { x: Math.floor(Math.random() * 14 + 1) * box, y: Math.floor(Math.random() * 14 + 1) * box };
@@ -294,7 +342,6 @@ I never want you to feel like your love is being wasted on me. You give me so mu
         }
         function collision(head, array) { for(let i=0; i<array.length; i++) { if(head.x === array[i].x && head.y === array[i].y) return true; } return false; }
 
-        // --- XO GAME ---
         let tttBoard = ["","","","","","","","",""]; let tttActive = true;
         function playTTT(i) {
             if(tttBoard[i] === "" && tttActive) {
@@ -302,11 +349,7 @@ I never want you to feel like your love is being wasted on me. You give me so mu
                 if(!checkWinner(tttBoard) && tttBoard.includes("")) {
                     tttActive = false;
                     setTimeout(() => {
-                        let bestMove;
-                        if(Math.random() < 0.3) {
-                            let empty = tttBoard.map((v, idx) => v === "" ? idx : null).filter(v => v !== null);
-                            bestMove = empty[Math.floor(Math.random() * empty.length)];
-                        } else { bestMove = getBestMove(tttBoard); }
+                        let bestMove = getBestMove(tttBoard);
                         tttBoard[bestMove] = "O"; renderTTT(); tttActive = true; checkFinalStatus();
                     }, 500);
                 } else { checkFinalStatus(); }
@@ -337,7 +380,6 @@ I never want you to feel like your love is being wasted on me. You give me so mu
         function renderTTT() { const cells = document.querySelectorAll(".ttt-cell"); cells.forEach((c, i) => { c.innerText = tttBoard[i]; c.style.color = tttBoard[i] === "X" ? "var(--ios-blue)" : "var(--ios-red)"; }); }
         function resetTTT() { tttBoard = ["","","","","","","","",""]; tttActive = true; renderTTT(); document.getElementById("ttt-status").innerText = ""; }
 
-        // --- FLAPPY JAY ---
         function startFlappy() {
             const canvas = document.getElementById("game-canvas"); const ctx = canvas.getContext("2d");
             canvas.width = 400; canvas.height = window.innerHeight;
@@ -345,26 +387,24 @@ I never want you to feel like your love is being wasted on me. You give me so mu
             let hs = localStorage.getItem("flappyHighScore") || 0;
             function loop() {
                 ctx.fillStyle = "#70c5ce"; ctx.fillRect(0,0,canvas.width, canvas.height);
-                if(frame % 90 === 0) { let gap = 160; let topH = Math.random() * (canvas.height/2 - 100) + 50; pipes.push({x: 400, top: topH, bot: topH+gap, hit: false}); }
+                if(frame % 90 === 0) { let topH = Math.random() * (canvas.height/2 - 100) + 50; pipes.push({x: 400, top: topH, bot: topH+160, hit: false}); }
                 pipes.forEach(p => {
                     p.x -= 3.5; ctx.fillStyle = "#2ecc71"; ctx.fillRect(p.x, 0, 55, p.top); ctx.fillRect(p.x, p.bot, 55, canvas.height);
                     if(50 > p.x + 55 && !p.hit) { score++; p.hit = true; if(score > hs) hs = score; localStorage.setItem("flappyHighScore", hs); }
                     if(80 > p.x && 50 < p.x + 55 && (birdY < p.top || birdY > p.bot)) gameOver = true;
                 });
-                velocity += 0.3; birdY += velocity; ctx.save(); ctx.translate(70, birdY); ctx.scale(-1, 1); ctx.font = "40px Arial"; ctx.fillText("🐦", 0, 0); ctx.restore();
+                velocity += 0.3; birdY += velocity; ctx.font = "40px Arial"; ctx.fillText("🐦", 70, birdY);
                 document.getElementById('flappy-ui').innerText = `Score: ${score} | High: ${hs}`;
                 if(birdY > canvas.height || birdY < 0) gameOver = true;
-                if(gameOver) { ctx.fillStyle="rgba(0,0,0,0.5)"; ctx.fillRect(0,0,400,canvas.height); ctx.fillStyle="white"; ctx.font="30px Arial"; ctx.fillText("GAME OVER", 110, 300); return; }
+                if(gameOver) return;
                 frame++; requestAnimationFrame(loop);
             }
-            canvas.onclick = () => { if(gameOver){birdY=canvas.height/2; velocity=0; pipes=[]; score=0; frame=0; gameOver=false; loop();} else velocity = -6.5; };
+            canvas.onclick = () => { if(gameOver) startFlappy(); else velocity = -6.5; };
             loop();
         }
 
-        // --- JOURNAL LOGIC ---
         function saveEntry() {
-            const txt = document.getElementById("journal-input").value;
-            if(txt.trim() === "") return;
+            const txt = document.getElementById("journal-input").value; if(txt.trim() === "") return;
             const entry = { id: Date.now(), text: txt, date: new Date().toLocaleString() };
             let entries = JSON.parse(localStorage.getItem("jayJournal") || "[]");
             entries.unshift(entry); localStorage.setItem("jayJournal", JSON.stringify(entries));
@@ -380,10 +420,8 @@ I never want you to feel like your love is being wasted on me. You give me so mu
             });
         }
         function deleteEntry(id) {
-            if(confirm("Are you sure you want to delete this note?")) {
-                let entries = JSON.parse(localStorage.getItem("jayJournal") || "[]");
-                entries = entries.filter(e => e.id !== id); localStorage.setItem("jayJournal", JSON.stringify(entries)); loadJournal();
-            }
+            let entries = JSON.parse(localStorage.getItem("jayJournal") || "[]");
+            entries = entries.filter(e => e.id !== id); localStorage.setItem("jayJournal", JSON.stringify(entries)); loadJournal();
         }
     </script>
 </body>
